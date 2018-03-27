@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <title>EscapeGame Comptabilité</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css">
+        <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css" >        
+        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/dt-1.10.16/r-2.2.1/rg-1.0.2/datatables.min.css"/>
+        <link rel="stylesheet" type="text/css" href="/javascripts/formvalidation/formValidation.min.css">
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+
+    </head>
+    <body>
+        <main class="container">
+            <div class="row">
+                    <div class="col-lg-12"></div>
+            </div>
+            <div class="row">
+                    <div class="col-lg-10">
+                        <h1>Comptabilité EscapeGame</h1> 
+                    </div>
+                    <div class="col-lg-2">
+                        <button role="button" onclick="addPlayer()" class="btn btn-primary">Ajouter un joueur</button>
+                    </div>
+            </div>
+            <table id="tablePlayers" class="table table-striped table-hover table-bordered" cellspacing="0" width="100%"></table>
+        </main>
+
+
+   
+        <div class="modal fade" id="modalUpdatePlayer">
+            <div class="modal-dialog">
+              <div class="modal-content">
+
+                <div class="modal-header">
+                    <h4 class="modal-title">Edition d'un joueur</h4>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <i class="fas fa-times" style="font-size: 30px;"></i>
+                    </button>
+                </div>
+
+                <form id="formUpdatePlayer" data-pk="">
+                    <div class="modal-body">                        
+                        <div class="form-group">
+                            <h5>Nom :</h5>
+                            <input type="text" class="form-control" name="nom">
+                        </div>
+
+                        <div class="form-group">
+                            <h5>Prenom :</h5>
+                            <input type="text" class="form-control" name="prenom">
+                        </div>
+
+                        <div class="form-group">
+                            <h5>Date de Naissance :</h5>
+                            <input type="text" class="form-control" name="dateNaissance">
+                        </div>
+
+                        <div class="form-group">
+                            <h5>Date d'inscription :</h5>
+                            <input disabled type="text" class="form-control" name="dateInscription">
+                        </div>
+
+                        <div class="form-group">
+                            <h5>Mail :</h5>
+                            <input type="text" class="form-control" name="mail" placeholder="Saisissez un email">
+                        </div>
+
+                        <div class="form-group">
+                            <h5>Pseudo</h5>
+                            <input type="text" class="form-control" name="pseudo" placeholder="Saisissez un pseudo">
+                        </div>
+                    </div>
+            
+                    <div class="modal-footer">
+                        <input role="button" type="submit" class="btn btn-success" value="Valider">
+                        <button role="button" class="btn btn-danger" data-dismiss="modal">Fermer</button>
+                    </div>
+
+                </form>
+              </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="modalAddCredit">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                  
+                <div class="modal-header">
+                    <h4 class="modal-title">Ajouter du crédit</h4>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <i class="fas fa-times" style="font-size: 30px;"></i>
+                    </button>
+                </div>
+    
+                <form id="formAddCredit" data-pk="" data-fv-err-clazz="invalid-feedback"
+                    data-fv-control-valid="is-valid" data-fv-control-invalid="is-invalid" data-fv-framework="bootstrap4">
+                    <div class="modal-body">   
+
+                        <div class="col-lg-12 form-group">
+                            <h5>Crédit actuel </h5>
+                            <input type="text" class="form-control" name="oldCredit" disabled>
+                        </div>
+                        <div class="col-lg-12 form-group">
+                          
+                                <h5>Crédit à ajouter </h5>
+                                <input type="number" class="form-control" name="newCredit" data-fv-notempty="true"
+                                    data-fv-notempty-message="Merci de saisir un montant"
+                                    placeholder="Montant de crédit à ajouté au joueur">
+                         
+                        </div>
+
+                    </div>
+            
+                    <div class="modal-footer">
+                        <input role="button" type="submit" class="btn btn-success" value="Valider">
+                        <button role="button" class="btn btn-danger" data-dismiss="modal">Fermer</button>
+                    </div>
+    
+                </form>
+              </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="modalAddPlayer">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                  
+                <div class="modal-header">
+                    <h4 class="modal-title">Ajouter un joueur</h4>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <i class="fas fa-times" style="font-size: 30px;"></i>
+                    </button>
+                </div>
+    
+                <form id="formAddPlayer" data-pk="" data-fv-err-clazz="invalid-feedback"
+                    data-fv-control-valid="is-valid" data-fv-control-invalid="is-invalid" data-fv-framework="bootstrap4">
+                    <div class="modal-body">                        
+                        <div class="form-group">
+                            <h5>Nom</h5>
+                            <input type="text" class="form-control" placeholder="Nom du joueur"
+                                name="newNom" data-fv-notempty="true"
+                                data-fv-notempty-message="Merci de renseigner le nom du joueur.">
+                        </div>
+    
+                        <div class="form-group">
+                            <h5>Prenom</h5>
+                            <input type="text" class="form-control" placeholder="Prénom du joueur"
+                                name="newPrenom" data-fv-notempty="true"
+                                data-fv-notempty-message="Merci de renseigner le prénom du joueur.">
+                        </div>
+    
+                        <div class="form-group">
+                            <h5>Date de Naissance</h5>
+                            <input type="text" class="form-control" placeholder="Date de naissance" name="newDate"
+                                data-fv-date="true" data-fv-trigger="keyup"
+                                data-fv-date-separator="/" data-fv-date-min="01/01/1900"
+                                data-fv-date-max="01/01/2050" data-fv-date-format="DD/MM/YYYY"
+                                data-fv-date-message="Merci de corriger la date, exemple 25/12/2000." data-fv-notempty="true"
+                                data-fv-notempty-message="Merci de renseigner la date de naissance du joueur.">
+                        </div>
+
+                        <div class="form-group">
+                            <h5>Pseudo</h5>
+                            <input type="text" class="form-control" name="newPseudo" placeholder="Saisissez un pseudo"
+                                data-fv-notempty="true" data-fv-notempty-message="Merci de renseigner un pseudo.">
+                        </div>
+
+                        <div class="form-group">
+                            <h5>Email</h5>
+                            <input type="email" class="form-control" placeholder="Email du joueur"
+                                name="newMail" data-fv-stringlength="true"
+                                data-fv-stringlength-max="100" data-fv-stringlength-min="4"
+                                data-fv-emailaddress="true">
+                        </div>
+                    </div>
+            
+                    <div class="modal-footer">
+                        <input role="button" type="submit" class="btn btn-success" value="Valider">
+                        <button role="button" class="btn btn-danger" data-dismiss="modal">Fermer</button>
+                    </div>
+    
+                </form>
+              </div>
+            </div>
+        </div>
+        <div class="modal fade" id="modalTransactions">
+            <div class="modal-dialog modal-lg">
+              <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="titleTransaction"></h4>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <i class="fas fa-times" style="font-size: 30px;"></i>
+                    </button>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <table id="tableTransactions" class="table table-striped table-hover table-bordered" cellspacing="0" width="100%"></table>
+                    </div>
+                </div>
+            
+                <div class="modal-footer">
+                    <button role="button" class="btn btn-danger" data-dismiss="modal">Fermer</button>
+                </div>
+              </div>
+            </div>
+        </div>
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" ></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+        <script src="https://cdn.datatables.net/v/bs4/dt-1.10.16/r-2.2.1/rg-1.0.2/datatables.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.21.0/moment.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+        <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
+
+        <script type="text/javascript" src="/javascripts/formvalidation/formvalidation.min.js"></script>
+        <script type="text/javascript" src="/javascripts/formvalidation/framework/bootstrap.min.js"></script>
+        <script type="text/javascript" src="/javascripts/formvalidation/framework/bootstrap4.min.js"></script>
+        
+        <script type="text/javascript" src="/javascripts/formatter/jquery.formatter.min.js"></script>
+
+        <script>
+            var table = $('#tablePlayers').DataTable({
+                processing: false,
+                serverSide: true,
+                autoWidth: true,
+                ajax: {
+                    url: "/joueurs/dt",
+                    dataType: 'json', 
+                    dataSrc: "data",
+                    type:"post"
+                },
+                /*responsive: {
+                    details: {
+                        type: 'column',
+                        //target: 'tr'
+                    }
+                },*/
+                responsive:true,
+                cache: true,
+                columns: [ 
+                    {data : "id" ,title: "ID",visible:false},
+                    {data : "nom" ,title: "Nom"},
+                    {data : "prenom" ,title: "Prénom"},
+                    {data : "dateNaissance" ,title: "Date de naissance"},
+                    {data : "dateInscription" ,title: "Date d'inscription",visible:false},
+                    {data : "mail" ,title: "Email"},
+                    {data : "credit" ,title: "Crédit"},
+                    {data : "pseudo" ,title: "Pseudo"},
+                    {data : "action" ,title: "Actions", targets:1}
+                ],
+                pagingType: "simple_numbers",                 
+                aoColumnDefs:[
+                    {
+                        "aTargets":[8],
+                        "mData": "action",
+                        "mRender": function (data, type, full) {
+                            return '<button role="button" class="btn btn-primary" data-toggle="modal" onclick="edit('+ full.id +')" /> <i class="fas fa-edit"></i></button>  <button role="button" class="btn btn-success" data-toggle="modal" onclick="addCredit('+ full.id +')" /> <i class="fas fa-plus-circle"></i></button>  <button role="button" class="btn btn-info" data-toggle="modal" onclick="transactions('+ full.id +')" /> <i class="fas fa-history"></i></button>';
+                        }
+                    }
+                ],
+                //pagingType: "simple_numbers",
+                //dom: "tp",
+                pagingType: "simple_numbers",
+                dom: "<'float-left'f><'float-right'B><t><'row'<'col-lg-12'<'float-left hidden-xs-down'i><'float-right'p>>>",
+                language : {
+                    "decimal":        "",
+                    "emptyTable":     "Aucune donnée dans la table",
+                    "info":           "Affiché de _START_ à _END_ sur _TOTAL_ lignes",
+                    "infoEmpty":      "Showing 0 to 0 of 0 entries",
+                    "infoFiltered":   "(filtered from _MAX_ total entries)",
+                    "infoPostFix":    "",
+                    "thousands":      ",",
+                    "lengthMenu":     "Afficher par _MENU_",
+                    "loadingRecords": "Chargement...",
+                    "processing":     "Processing...",
+                    "search":         "Recherche:",
+                    "zeroRecords":    "Aucune correspondance",
+                    "paginate": {
+                        "first":      "Premier",
+                        "last":       "Dernier",
+                        "next":       "Suivant",
+                        "previous":   "Précédent"
+                    },
+                    "aria": {
+                        "sortAscending":  ": Trier les colonnes dans l'ordre croissant",
+                        "sortDescending": ": Trier les colonnes dans l'ordre décroissant"
+                    }
+                }
+  
+            });
+            var transactions1 = $('#tableTransactions').DataTable({
+                    processing: false,
+                    serverSide: true,
+                    autoWidth: true,
+                    search: { value: '', regex: 'false' },
+                    ajax: {
+                        url: "/transactions/0",
+                        dataType: 'json', 
+                        dataSrc: "data",
+                        type:"post"
+                    },
+                    responsive:true,
+                    cache: true,
+                    columns: [ 
+                        { data : "id" ,title: "ID"},
+                        { data : "joueur" ,title: "Joueur"},
+                        { data : "valeur" ,title: "Valeur"},
+                        { data : "date" ,title: "Date"}
+                    ],
+                    pagingType: "simple_numbers",
+                    buttons: [
+                        {
+                            extend: 'pageLength',
+                            autoClose: true,
+                            className: 'btn btn-outline btn-default hidden-xs-down'
+                        },
+                    ],                    
+                    pagingType: "simple_numbers",
+                    dom: "<'float-left'f><'float-right'B><t><'row'<'col-lg-12'<'float-left hidden-xs-down'i><'float-right'p>>>",
+                    language : {
+                        "decimal":        "",
+                        "emptyTable":     "Aucune donnée dans la table",
+                        "info":           "Affiché de _START_ à _END_ sur _TOTAL_ lignes",
+                        "infoEmpty":      "Showing 0 to 0 of 0 entries",
+                        "infoFiltered":   "(filtered from _MAX_ total entries)",
+                        "infoPostFix":    "",
+                        "thousands":      ",",
+                        "lengthMenu":     "Afficher par _MENU_",
+                        "loadingRecords": "Chargement...",
+                        "processing":     "Processing...",
+                        "search":         "Recherche:",
+                        "zeroRecords":    "Aucune correspondance",
+                        "paginate": {
+                            "first":      "Premier",
+                            "last":       "Dernier",
+                            "next":       "Suivant",
+                            "previous":   "Précédent"
+                        },
+                        "aria": {
+                            "sortAscending":  ": Trier les colonnes dans l'ordre croissant",
+                            "sortDescending": ": Trier les colonnes dans l'ordre décroissant"
+                        }
+                    }      
+                }); 
+            function addPlayer(){
+                $("#modalAddPlayer").modal("show");
+            }
+            function transactions(p_id){
+                $("#modalTransactions").modal("show");
+                $.get('/joueurs/'+p_id, function(data){
+                    var joueur = data.data;
+                    $('#titleTransaction').text("Historique du joueur " + joueur.nom + " " + joueur.prenom);
+                });
+                transactions1.ajax.url( "/transactions/" + p_id).load(); 
+            }
+
+            function addCredit(p_id){
+                $("#modalAddCredit").modal("show");
+                $.get('/joueurs/'+p_id, function(data){
+                    var joueur = data.data;
+                    $('#formAddCredit').attr("data-pk",joueur.id);
+                    $('[name=oldCredit').val(joueur.credit + " €");
+                })
+            }
+
+            function edit(p_id){
+                $.get('/joueurs/'+p_id, function(data){
+                    var joueur = data.data;
+                    $('#updatePlayer').attr("data-pk",joueur.id);
+
+                    $('[name=nom]').val(joueur.nom);
+                    $('[name=prenom]').val(joueur.prenom);
+                    $('[name=dateNaissance]').val(joueur.dateNaissance);
+                    $('[name=dateInscription]').val(joueur.dateInscription);
+                    $('[name=credit]').val(joueur.credit);
+                    $('[name=mail]').val(joueur.mail);
+                    $('[name=pseudo]').val(joueur.pseudo);
+                });
+                $("#modalUpdatePlayer").modal("show");
+            }
+
+            $(document).ready(function(){
+                setTimeout(function(){ table.columns.adjust().draw(); }, 100);
+
+                $('[name=newDate]').formatter({
+                    pattern: '{{99}}/{{99}}/{{9999}}'
+                });
+
+                $('#formAddPlayer').formValidation().on('success.form.fv', function(e){
+                    e.preventDefault();
+                    var $form = $(e.target);
+                    fv = $form.data('formValidation');
+
+                    data = $('#formAddPlayer').serializeArray();
+                    data.splice(2,1);
+                    dateNaissance = moment($('[name=newDate').val(),'DD/MM/YYYY').format('YYYY-MM-DD');
+                    data.push({ name: "newDate", value: dateNaissance });
+
+                    $.post(
+                        "/joueurs/",
+                        data,
+                        function(data, statut){
+                            toastr[data.status](data.message, data.title);
+                            if(data.status == 'success'){
+                                $("#formAddCredit").trigger('reset');
+                                $("#modalAddCredit").modal("hide");
+                                table.ajax.reload();
+                            }
+                        }
+                    )
+                });
+
+                $('#formAddCredit').formValidation().on('success.form.fv', function(e){
+                    e.preventDefault();
+                    var $form = $(e.target);
+                    fv = $form.data('formValidation');
+                    
+                    $.ajax({
+                        url:'/joueurs/update/credit/'+$("#formAddCredit").attr("data-pk"),
+                        type:"put",
+                        data:$('#formAddCredit').serializeArray(),
+                        success:function(data){
+                            toastr[data.status](data.message, data.title);
+                            if(data.status == 'success'){
+                                $("#formAddCredit").trigger('reset');
+                                $("#modalAddCredit").modal("hide");
+                                table.ajax.reload();
+                            }
+                        }
+                    });
+                });
+
+                $('#formUpdatePlayer').formValidation().on('success.form.fv', function(e){
+                    e.preventDefault();
+                    var $form = $(e.target);
+                    fv = $form.data('formValidation');
+                    data = $('#formUpdatePlayer').serializeArray();
+                    data.splice(2, 1);
+                    dateNaissance = moment($('[name=dateNaissance').val(),'DD/MM/YYYY').format('YYYY-MM-DD');
+                    data.push({ name: "dateNaissance", value: dateNaissance });
+
+                    $.ajax({
+                        url:'/joueurs/update/'+$("#updatePlayer").attr("data-pk"),
+                        type:"put",
+                        data:data,
+                        success:function(data){
+                            toastr[data.status](data.message, data.title);
+                            if(data.status == 'success'){
+                                $("#modalUpdatePlayer").modal("hide");
+                                table.ajax.reload();
+                            }
+                        }
+                    });
+                });
+
+            });
+
+        </script>
+    </body>
+</html>
